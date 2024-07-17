@@ -1,25 +1,40 @@
-import React from 'react'
-
-const ResetPassword = () => {
+import {React,useState} from 'react'
+import {auth} from "../config/firebase";
+import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+const ResetPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const [email,setEmail]= useState("");
+	const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
+	const handlePasswordReset=async()=>{
+		try {
+			const success= await sendPasswordResetEmail(email);
+		if(success)
+		toast.success("mail sent ! kindly check your inbox")
+		} catch (error:any) {
+			toast.error(error.message);
+		}
+		
+	}
   return (
     <div>
-      <form className='space-y-6 px-6 lg:px-8 pb-4 sm:pb-6 xl:pb-8' >
+      <form className='space-y-6 px-6 lg:px-8 pb-4 sm:pb-6 xl:pb-8' onSubmit={handlePasswordReset}>
 			<h3 className='text-xl font-medium  text-white'>Reset Password</h3>
-			<p className='text-sm text-white '>
-				Forgotten your password? Enter your e-mail address below, and we&apos;ll send you an e-mail allowing you
-				to reset it.
+			<p className='font-medium text-white '>
+				Please enter your email address below
 			</p>
 			<div>
-				<label htmlFor='email' className='text-sm font-medium block mb-2 text-gray-300'>
+				<label htmlFor='email' className='text-sm font-medium block mb-2 text-white'>
 					Your email
 				</label>
 				<input
 					type='email'
 					name='email'
-					// onChange={(e) => setEmail(e.target.value)}
+					onChange={(e)=>setEmail(e.target.value)}
+					
 					id='email'
-					className='border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white'
-					placeholder='name@company.com'
+					className='border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  placeholder-gray-400 text-white'
+					placeholder='johndoe@company.com'
 				/>
 			</div>
 
