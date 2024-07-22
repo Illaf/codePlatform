@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EditorNav from './EditorNav'
 import Split from 'react-split'
 import CodeMirror from "@uiw/react-codemirror";
@@ -19,7 +19,7 @@ type CodeEditorProps={
 }
 const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) => {
   const [activeId,setActiveId]=useState(0);
-  const [userCode,setUserCode] = useState<string>(problem.starterCode);
+  let [userCode,setUserCode] = useState<string>(problem.starterCode);
   const [user]= useAuthState(auth);
   const {query : {qid}}= useRouter();
   const handleProblemSubmit=async()=>{
@@ -32,33 +32,47 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) =>
       return;
     }
     try {
+     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName)) 
      const callback= new Function(`return ${userCode}`)(); 
-     const response= problems[qid as string].handlerFunction(callback);
-     if(response){
-      toast.success("Congratulations! All test cases passed.");
-      // setAccepted(true);
-      // setTimeout(()=>{
-      //   setAccepted(false);
-      // },3000)
+     const handler= problems[qid as string].handlerFunction;
+     if(typeof handler === 'function'){
+      const response= handler(callback);
+      if(response){
+        toast.success("Congratulations! All test cases passed.");
+        // setAccepted(true);
+        // setTimeout(()=>{
+        //   setAccepted(false);
+        // },3000)
+       }
+       const userRef= doc(firestore,"users",user.uid);
+       await updateDoc(userRef, {
+        solvedProblems: arrayUnion(qid)
+       });
+       setSolve(true);
      }
-     const userRef= doc(firestore,"users",user.uid);
-     await updateDoc(userRef, {
-      solvedProblems: arrayUnion(qid)
-     });
-     setSolve(true);
+   
     } catch (error) {
       console.log(error)
     }
   }
   const onCodeChange=(value:string)=>{
     setUserCode(value);
+    localStorage.setItem(`code-${qid}`, JSON.stringify(value));
   }
+  useEffect(()=>{
+    const code= localStorage.getItem(`code-${qid}`);
+    if(user){
+      setUserCode(code ? JSON.parse(code): problem.starterCode);
+    }else{
+      setUserCode(problem.starterCode);
+    }
+  },[qid, user, problem.starterCode])
   return (
     <div className='flex flex-col relative'>
      <EditorNav/>
      <Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60,40]} minSize={60}>
     <CodeMirror 
-    value={problem.starterCode}
+    value={userCode}
     // theme={vscodeDark}
     onChange={onCodeChange}
     extensions={[javascript()]}

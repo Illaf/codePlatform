@@ -4,11 +4,12 @@ import { BiCheckCircle } from 'react-icons/bi';
 import Link from 'next/link';
 import { AiFillYoutube } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import {firestore} from "../config/firebase";
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
+import {auth, firestore} from "../config/firebase";
 import YouTube from 'react-youtube';
 import { IoClose } from 'react-icons/io5';
 import { DBProblem } from '@/utils/types/problem';
+import { useAuthState } from 'react-firebase-hooks/auth';
 type DocumentProps ={
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -26,7 +27,27 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
 		return () => window.removeEventListener("keydown", handleEsc);
   }
     ,[])
+    const solvedProblems=  getSolvedProblems();
+    //console.log(solvedProblems);
     const problems= getProblemsList(setLoading);
+    function getSolvedProblems(){
+      const [ solvedProblems,setSolvedProblems]= useState<string[]>([]);
+      const [user]= useAuthState(auth);
+
+      useEffect(()=>{
+        const getSolved= async()=>{
+          const userRef= doc(firestore,"users",user!.uid);
+          const userDoc= await getDoc(userRef);
+          if(userDoc.exists()){
+            setSolvedProblems(userDoc.data().solvedProblems);
+          }
+        }
+        if(user) getSolved();
+        if(!user) getSolved([]);
+      }
+      ,[user])
+      return solvedProblems
+    }
     function getProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
       const[problems,setProblems] = useState<DBProblem[]>([]);
       useEffect(()=>{
@@ -44,6 +65,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
         }
         problemsList();
     },[setLoading])
+   
     return problems;
     }
   return (
@@ -55,8 +77,8 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
        
             <tr className='' key={problem.id}>
                 <th className='px-2 py-4 font-medium whitespace-nowrap'>
-                  
-                <BiCheckCircle className='text-xl text-green-600' />
+                  {solvedProblems.includes(problem.id) && (<BiCheckCircle className='text-xl text-green-600' />)}
+                
                 </th>
                 <td className={`px-6 py-4 font-medium cursor-pointer hover:text-blue-600`}>
                   <Link href={`/problems/${problem.id}`}>{problem.title}</Link>
