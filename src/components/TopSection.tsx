@@ -10,6 +10,9 @@ import Logout from './Logout';
 import { authModalState } from '@/atoms/authAtom';
 import { useSetRecoilState } from 'recoil';
 import Timer from './Timer';
+import { useRouter } from 'next/router'
+import { problems } from '@/utils/Data'
+
 
  //
  type TopSectionProps = {
@@ -18,7 +21,24 @@ import Timer from './Timer';
 const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 	const [user]= useAuthState(auth);
 	 const setAuthModelState= useSetRecoilState(authModalState);
-	
+	 const router= useRouter();
+	const handleProblemChange= (forward:boolean)=>{
+		const {order} =problems[router.query.qid as string] ;
+		console.log(problems[router.query.qid as string] )
+		const direction= forward?1:-1;
+		let nextProblemOrder= order+direction;
+		const nextProblemKey = Object.keys(problems).find(key => problems[key].order === nextProblemOrder);
+		if(forward && !nextProblemKey) {
+			const firstProblemKey = Object.keys(problems).find(key => problems[key].order == 1);
+			
+			router.push(`/problems/${firstProblemKey}`);
+		}
+		else if(!forward && !nextProblemKey){
+			const lastProblemKey = Object.keys(problems).find(key => problems[key].order === Object.keys(problems).length);
+			router.push(`/problems/${lastProblemKey}`);
+		}
+		else router.push(`/problems/${nextProblemKey}`);
+	}
   return (
 	
     <div>
@@ -32,13 +52,13 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 					<div className='flex items-center gap-4 flex-1 justify-center'>
 						<div
 							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-green-500 h-8 w-8 cursor-pointer'
-							
+							onClick={()=>handleProblemChange(false)}
 						>
 							<FaChevronLeft />
 						</div>
 						<Link
 							href='/'
-							className='flex items-center gap-2 font-medium max-w-[170px] text-dark-gray-8 cursor-pointer'
+							className='flex items-center gap-2 font-medium max-w-[170px]  text-dark-gray-8 cursor-pointer'
 						>
 							<div>
 								<BsList />
@@ -46,8 +66,8 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 							<p>Problem List</p>
 						</Link>
 						<div
-							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer'
-							
+							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-green-500 h-8 w-8 cursor-pointer'
+							onClick={()=>handleProblemChange(true)}
 						>
 							<FaChevronRight />
 						</div>

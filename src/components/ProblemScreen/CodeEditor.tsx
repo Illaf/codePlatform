@@ -6,11 +6,53 @@ import {} from "@uiw/codemirror-theme-vscode";
 import { javascript } from '@codemirror/lang-javascript';
 import TestFooter from '../TestFooter';
 import { Problem } from '@/utils/types/problem';
+import { auth, firestore } from '@/config/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { toast } from "react-toastify";
+import { problems } from '@/utils/Data';
+import { useRouter } from 'next/router';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 type CodeEditorProps={
-  problem:Problem
+  problem:Problem,
+  setAccepted: React.Dispatch<React.SetStateAction<boolean>>;
+  setSolve: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const CodeEditor:React.FC<CodeEditorProps> = ({problem}) => {
+const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) => {
   const [activeId,setActiveId]=useState(0);
+  const [userCode,setUserCode] = useState<string>(problem.starterCode);
+  const [user]= useAuthState(auth);
+  const {query : {qid}}= useRouter();
+  const handleProblemSubmit=async()=>{
+    if(!user){
+      toast.error("You need to sign up for submitting a problem",{
+        position:"top-center",
+        autoClose:3000
+        
+      });
+      return;
+    }
+    try {
+     const callback= new Function(`return ${userCode}`)(); 
+     const response= problems[qid as string].handlerFunction(callback);
+     if(response){
+      toast.success("Congratulations! All test cases passed.");
+      // setAccepted(true);
+      // setTimeout(()=>{
+      //   setAccepted(false);
+      // },3000)
+     }
+     const userRef= doc(firestore,"users",user.uid);
+     await updateDoc(userRef, {
+      solvedProblems: arrayUnion(qid)
+     });
+     setSolve(true);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const onCodeChange=(value:string)=>{
+    setUserCode(value);
+  }
   return (
     <div className='flex flex-col relative'>
      <EditorNav/>
@@ -18,7 +60,7 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem}) => {
     <CodeMirror 
     value={problem.starterCode}
     // theme={vscodeDark}
-    // onChange={onChange}
+    onChange={onCodeChange}
     extensions={[javascript()]}
     // style={{ fontSize: settings.fontSize }}
     />
@@ -60,7 +102,7 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem}) => {
                     {problem.examples[activeId].outputText}
                     </div>
                     </div>
-                    <TestFooter/>
+                    <TestFooter handleProblemSubmit={handleProblemSubmit}/>
             </div>
      </Split>
     </div>

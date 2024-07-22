@@ -3,11 +3,16 @@ import TopSection from '@/components/TopSection'
 import React from 'react'
 import {Problem} from "@/utils/types/problem";
 import {problems} from "@/utils/Data";
+import useMounted from '@/hooks/mounted';
 type ProblemWindowProps={
   problem:Problem
 }
 const ProblemWindow:React.FC<ProblemWindowProps> = ({problem}) => {
   // console.log(problem);
+  const hasMounted= useMounted();
+	if(!hasMounted){
+		return null;
+	}
   return (
     <div className='overflow-hidden'>
         <TopSection problemWindow={true}/>

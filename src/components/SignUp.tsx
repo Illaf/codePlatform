@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import { authModalState } from '@/atoms/authAtom';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { doc, setDoc } from 'firebase/firestore';
+import {firestore} from "../config/firebase"
 const Signup = () => {
   const router = useRouter();
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -26,15 +28,27 @@ const Signup = () => {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      
       const newUser = await createUserWithEmailAndPassword(
         auth,
         inputState.email,
         inputState.password
       );
-
+      toast.loading("Creating account,Please wait",{toastId:"toastLoader"});
+      const userData={
+        uid: newUser.user.uid,
+				email: newUser.user.email,
+				displayName: inputState.fullname,
+				createdAt: Date.now(),
+				updatedAt: Date.now(),
+				likedProblems: [],
+				dislikedProblems: [],
+				solved: [],
+				starred: [],
+       }
+        await setDoc(doc(firestore,"users",newUser.user.uid),userData);
       if (newUser) {
-       
-
+      
         router.push("/");
       }
     } catch (error: any) {
@@ -42,6 +56,8 @@ const Signup = () => {
         position: "top-left"
       });
       console.log(`Error on signup : ${error.message}`);
+    }finally{
+      toast.dismiss("toastLoader")
     }
   };
 

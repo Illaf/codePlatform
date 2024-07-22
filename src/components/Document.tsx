@@ -4,13 +4,15 @@ import { BiCheckCircle } from 'react-icons/bi';
 import Link from 'next/link';
 import { AiFillYoutube } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
-
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {firestore} from "../config/firebase";
 import YouTube from 'react-youtube';
 import { IoClose } from 'react-icons/io5';
+import { DBProblem } from '@/utils/types/problem';
 type DocumentProps ={
-
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const Document:React.FC<DocumentProps> = () => {
+const Document:React.FC<DocumentProps> = ({setLoading}) => {
   const[playYt, setPlayYt]=useState({isOpen:false, videoId:""});
   const closeModal=()=>{
     setPlayYt({isOpen:false, videoId:""})
@@ -24,30 +26,51 @@ const Document:React.FC<DocumentProps> = () => {
 		return () => window.removeEventListener("keydown", handleEsc);
   }
     ,[])
+    const problems= getProblemsList(setLoading);
+    function getProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
+      const[problems,setProblems] = useState<DBProblem[]>([]);
+      useEffect(()=>{
+        const problemsList= async()=>{
+          setLoading(true);
+          const q= query(collection(firestore,"problems"),orderBy("order","asc"));
+          const querySnapshot = await getDocs(q);
+          let tempArray:DBProblem[] =[];
+          querySnapshot.forEach((doc) => {
+            tempArray.push({ id: doc.id, ...doc.data() } as DBProblem);
+            
+          });
+          setProblems(tempArray);
+          setLoading(false);
+        }
+        problemsList();
+    },[setLoading])
+    return problems;
+    }
   return (
     <>
     <tbody>
-      {questions.map((ques,idx)=>{
-        const difficultyColor= ques.difficulty == "Easy"?"text-green-400":ques.difficulty == "Medium"?"text-yellow-700":"text-green-700";
+      {problems.map((problem,idx)=>{
+        const difficultyColor= problem.difficulty == "Easy"?"text-green-400":problem.difficulty == "Medium"?"text-yellow-700":"text-green-700";
         return(
        
-            <tr className='' key={ques.id}>
+            <tr className='' key={problem.id}>
                 <th className='px-2 py-4 font-medium whitespace-nowrap'>
+                  
                 <BiCheckCircle className='text-xl text-green-600' />
                 </th>
                 <td className={`px-6 py-4 font-medium cursor-pointer hover:text-blue-600`}>
-                  <Link href={`/problems/${ques.id}`}>{ques.title}</Link>
+                  <Link href={`/problems/${problem.id}`}>{problem.title}</Link>
                 </td>
                 <td className={`px-6 py-4 font-medium ${difficultyColor}`}>
-                  {ques.difficulty}
+                  {problem.difficulty}
                 </td>
                 <td className={`px-6 py-4 font-medium`}>
-                  {ques.category}
+                  {problem.category}
                 </td>
                 <td className={`px-6 py-4 font-medium`}>
-                  {ques.videoId?(
+                  {problem.videoId?(
                     <AiFillYoutube className='text-red-600 text-3xl font-[32px]'
-                    onClick={()=>setPlayYt({isOpen:true, videoId:ques.videoId as string})}/>
+                    onClick={()=>setPlayYt({isOpen:true, videoId:problem.videoId as string})}/>
                   ):(<p>Coming Soon</p>)}
                 </td>
             </tr>
