@@ -27,9 +27,9 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
 		return () => window.removeEventListener("keydown", handleEsc);
   }
     ,[])
-    const solvedProblems=  getSolvedProblems();
+    const solvedProblems=  useGetSolvedProblems();
     //console.log(solvedProblems);
-    const problems= getProblemsList(setLoading);
+    const problems= useGetProblemsList(setLoading);
 
   return (
     <>
@@ -92,7 +92,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
 }
 
 export default Document;
-function getSolvedProblems(){
+function useGetSolvedProblems(){
   const [ solvedProblems,setSolvedProblems]= useState<string[]>([]);
   const [user]= useAuthState(auth);
 
@@ -110,7 +110,7 @@ function getSolvedProblems(){
   ,[user])
   return solvedProblems
 }
-function getProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
+function useGetProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
   const[problems,setProblems] = useState<DBProblem[]>([]);
   useEffect(()=>{
     const problemsList= async()=>{
