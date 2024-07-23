@@ -3,7 +3,8 @@ import {auth} from "../config/firebase";
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const ResetPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+type ResetPasswordProps = {};
+const ResetPassword: React.FC<ResetPasswordProps> = () => {
 	const [email,setEmail]= useState("");
 	const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
 	const handlePasswordReset=async()=>{
