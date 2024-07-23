@@ -30,44 +30,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
     const solvedProblems=  getSolvedProblems();
     //console.log(solvedProblems);
     const problems= getProblemsList(setLoading);
-    function getSolvedProblems(){
-      const [ solvedProblems,setSolvedProblems]= useState<string[]>([]);
-      const [user]= useAuthState(auth);
 
-      useEffect(()=>{
-        const getSolved= async()=>{
-          const userRef= doc(firestore,"users",user!.uid);
-          const userDoc= await getDoc(userRef);
-          if(userDoc.exists()){
-            setSolvedProblems(userDoc.data().solvedProblems);
-          }
-        }
-        if(user) getSolved();
-        if(!user) setSolvedProblems([]);
-      }
-      ,[user])
-      return solvedProblems
-    }
-    function getProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
-      const[problems,setProblems] = useState<DBProblem[]>([]);
-      useEffect(()=>{
-        const problemsList= async()=>{
-          setLoading(true);
-          const q= query(collection(firestore,"problems"),orderBy("order","asc"));
-          const querySnapshot = await getDocs(q);
-          let tempArray:DBProblem[] =[];
-          querySnapshot.forEach((doc) => {
-            tempArray.push({ id: doc.id, ...doc.data() } as DBProblem);
-            
-          });
-          setProblems(tempArray);
-          setLoading(false);
-        }
-        problemsList();
-    },[setLoading])
-   
-    return problems;
-    }
   return (
     <>
     <tbody>
@@ -129,3 +92,41 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
 }
 
 export default Document;
+function getSolvedProblems(){
+  const [ solvedProblems,setSolvedProblems]= useState<string[]>([]);
+  const [user]= useAuthState(auth);
+
+  useEffect(()=>{
+    const getSolved= async()=>{
+      const userRef= doc(firestore,"users",user!.uid);
+      const userDoc= await getDoc(userRef);
+      if(userDoc.exists()){
+        setSolvedProblems(userDoc.data().solvedProblems);
+      }
+    }
+    if(user) getSolved();
+    if(!user) setSolvedProblems([]);
+  }
+  ,[user])
+  return solvedProblems
+}
+function getProblemsList(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
+  const[problems,setProblems] = useState<DBProblem[]>([]);
+  useEffect(()=>{
+    const problemsList= async()=>{
+      setLoading(true);
+      const q= query(collection(firestore,"problems"),orderBy("order","asc"));
+      const querySnapshot = await getDocs(q);
+      let tempArray:DBProblem[] =[];
+      querySnapshot.forEach((doc) => {
+        tempArray.push({ id: doc.id, ...doc.data() } as DBProblem);
+        
+      });
+      setProblems(tempArray);
+      setLoading(false);
+    }
+    problemsList();
+},[setLoading])
+
+return problems;
+}
