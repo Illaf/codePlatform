@@ -7,7 +7,7 @@ const Timer = () => {
   const [time, setTime] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const formatTime = (time) => {
+  const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
@@ -16,7 +16,7 @@ const Timer = () => {
   };
 
   useEffect(() => {
-    let intervalId;
+    let intervalId: string | number | NodeJS.Timeout | undefined;
 
     if (timer) {
       intervalId = setInterval(() => {

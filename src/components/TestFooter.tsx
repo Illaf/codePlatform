@@ -2,7 +2,7 @@ import React from 'react'
 type testFooterProps={
 	handleProblemSubmit: ()=> void;
 }
-const TestFooter = ({handleProblemSubmit}) => {
+const TestFooter: React.FC<testFooterProps> = ({handleProblemSubmit}) => {
 	
   return (
     <div className='flex absolute bottom-0 w-full z-10 space-x-2 justify-between bg-slate-300'>
