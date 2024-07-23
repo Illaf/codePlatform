@@ -45,7 +45,7 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
       <nav className='relative flex h-[50px] w-full shrink-0 items-center bg-primary-color-1 px-5 bg-dark-layer-1 text-dark-gray-7'>
 			<div className={`flex w-full items-center justify-between `}>
 				<Link href='/' className='h-[22px] flex-1'>
-					<Image src='' alt='Logo' height={100} width={100} />
+					<Image src='/images/AppLogo.png' alt='Logo' height={100} width={100} />
 				</Link>
 
 				{problemWindow && (

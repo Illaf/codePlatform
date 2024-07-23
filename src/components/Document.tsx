@@ -43,7 +43,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
           }
         }
         if(user) getSolved();
-        if(!user) getSolved([]);
+        if(!user) setSolvedProblems([]);
       }
       ,[user])
       return solvedProblems
@@ -78,7 +78,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
             <tr className='' key={problem.id}>
                 <th className='px-2 py-4 font-medium whitespace-nowrap'>
                   {solvedProblems.includes(problem.id) && (<BiCheckCircle className='text-xl text-green-600' />)}
-                
+                  {!(solvedProblems.includes(problem.id)) && (<p className='text-gray-400'>Not solved</p>)}
                 </th>
                 <td className={`px-6 py-4 font-medium cursor-pointer hover:text-blue-600`}>
                   <Link href={`/problems/${problem.id}`}>{problem.title}</Link>
