@@ -28,7 +28,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
   }
     ,[])
     const solvedProblems=  useGetSolvedProblems();
-    //console.log(solvedProblems);
+    console.log("solved problems are",solvedProblems);
     const problems= useGetProblemsList(setLoading);
 
   return (
@@ -101,7 +101,7 @@ function useGetSolvedProblems(){
       const userRef= doc(firestore,"users",user!.uid);
       const userDoc= await getDoc(userRef);
       if(userDoc.exists()){
-        setSolvedProblems(userDoc.data().solvedProblems);
+        setSolvedProblems(userDoc.data().solved);
       }
     }
     if(user) getSolved();
