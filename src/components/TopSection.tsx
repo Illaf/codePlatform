@@ -51,10 +51,10 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 				{problemWindow && (
 					<div className='flex items-center gap-4 flex-1 justify-center'>
 						<div
-							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-green-500 h-8 w-8 cursor-pointer'
+							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-blue-500 h-8 w-8 cursor-pointer'
 							onClick={()=>handleProblemChange(false)}
 						>
-							<FaChevronLeft />
+							<FaChevronLeft className='text-white'/>
 						</div>
 						<Link
 							href='/'
@@ -63,18 +63,21 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 							<div>
 								<BsList />
 							</div>
-							<p>Problem List</p>
+							<p className='text-white'>Problem List</p>
 						</Link>
 						<div
 							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-green-500 h-8 w-8 cursor-pointer'
 							onClick={()=>handleProblemChange(true)}
 						>
-							<FaChevronRight />
+							<FaChevronRight className='text-white'/>
 						</div>
 					</div>
 			
 			)}
-				{user && (<Timer/>)}
+			<div className='text-white'>
+			{user && (<Timer />)}
+			</div>
+				
 				<div className='flex items-center space-x-4 flex-1 justify-end'>
 					
 					{!user && (

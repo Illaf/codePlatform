@@ -14,7 +14,7 @@
 }
 
 .gutter {
-    background-color: 	#AFE1AF;
+    background-color: 	#000;
     background-repeat: no-repeat;
     background-position: 50%;
 }
@@ -30,6 +30,32 @@
 .split {
 	display: flex;
 	flex-direction: row;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes drawGrid {
+  0% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-drawGrid {
+  animation: drawGrid 4s linear infinite alternate;
 }
 
 

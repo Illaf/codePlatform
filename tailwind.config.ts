@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       colors:{
-        "primary-color-1":"#D6EFD8",
-        "primary-color-2":"#508D4E"
+        "primary-color-1":"#2F3591",
+        "primary-color-2":"#6623A6"
       }
     },
   },

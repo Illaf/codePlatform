@@ -35,7 +35,7 @@ const Document:React.FC<DocumentProps> = ({setLoading}) => {
     <>
     <tbody>
       {problems.map((problem,idx)=>{
-        const difficultyColor= problem.difficulty == "Easy"?"text-green-400":problem.difficulty == "Medium"?"text-yellow-700":"text-green-700";
+        const difficultyColor= problem.difficulty == "Easy"?"text-green-400":problem.difficulty == "Medium"?"text-yellow-700":"text-red-700";
         return(
        
             <tr className='' key={problem.id}>

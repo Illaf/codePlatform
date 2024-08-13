@@ -95,7 +95,7 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) =>
 							>
 								<div className='flex flex-wrap items-center gap-y-4'>
 									<div
-										className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
+										className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-gray-300 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
 										${activeId === idx ? "text-black" : "text-gray-500"}
 									`}
 									>
@@ -116,8 +116,9 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) =>
                     {problem.examples[activeId].outputText}
                     </div>
                     </div>
-                    <TestFooter handleProblemSubmit={handleProblemSubmit}/>
+                    
             </div>
+            <TestFooter handleProblemSubmit={handleProblemSubmit}/>
      </Split>
     </div>
   )
