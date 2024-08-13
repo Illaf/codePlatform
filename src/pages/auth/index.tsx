@@ -58,7 +58,7 @@ if(user)
         >
           {/* SVG Content */}
           <rect width="800" height="600" fill="none" />
-          <g stroke="#2d3748" strokeWidth="1" strokeOpacity="0.4">
+          <g stroke="#cbd5e0" strokeWidth="1" strokeOpacity="0.4">
             <path d="M0 50H800M0 150H800M0 250H800M0 350H800M0 450H800M0 550H800" />
             <path d="M50 0V600M150 0V600M250 0V600M350 0V600M450 0V600M550 0V600M650 0V600M750 0V600" />
           </g>

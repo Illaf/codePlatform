@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = () => {
             
         </Link>
         <div className='flex items-center' > 
-            <button onClick={handleClick} className='bg-primary-color-2 text-white px-2 py-1 sm:px-4 rounded-md font-medium hover:text-primary-color-2 hover:bg-white
+            <button onClick={handleClick} className='bg-purple-400 text-white px-2 py-1 sm:px-4 rounded-md font-medium hover:text-primary-color-2 hover:bg-white
             hover:border-2 hover:border-primary-color-2'>
                 Sign In
             </button>

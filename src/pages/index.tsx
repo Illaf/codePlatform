@@ -2,20 +2,30 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import TopSection from "@/components/TopSection";
 import Document from "../components/Document";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
-import { firestore } from "@/config/firebase";
+import { auth, firestore } from "@/config/firebase";
 import {  Grid } from 'react-loader-spinner'
 import useMounted from "@/hooks/mounted";
+import { onAuthStateChanged } from "firebase/auth";
+import router from "next/router";
+
+import AuthPage from "./auth";
 const inter = Inter({ subsets: ["latin"] });
 
 
 export default function Home() {
 	const [loading,setLoading]= useState(true);
 	const hasMounted= useMounted();
-	if(!hasMounted){
-		return null;
-	}
+
+	// useEffect(() => {
+	// 	const unsubscribe = onAuthStateChanged(auth, (user) => {
+	// 	  if (!user) {
+	// 		router.push("/auth"); // Redirect to auth page if not logged in
+	// 	  } else {
+	// 		setLoading(false); // Stop loading once user is authenticated
+	// 	  }
+	// 	});
 	// const [inputs, setInputs]= useState({
 	// 	id:"",
 	// 	title:"",
@@ -42,8 +52,26 @@ export default function Home() {
 	// 	await setDoc(doc(firestore, "problems", inputs.id),parsedProblem);
 	// 	alert("saved to db");
 	// }
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+		  if (!user) {
+			router.push("/auth"); // Redirect to auth page if not logged in
+		  } else {
+			setLoading(false); // Stop loading once user is authenticated
+		  }
+		});
+	
+		return () => unsubscribe(); // Correctly return the cleanup function
+	  }, [router]);
+	  if(!hasMounted){
+		return (
+			<AuthPage/>
+		);
+	}
   return (
+	
     <main className="min-h-screen ">
+	
      <TopSection/>
      {/* <h1
 					className='text-2xl text-center text-gray-700 dark:text-gray-400 font-medium
