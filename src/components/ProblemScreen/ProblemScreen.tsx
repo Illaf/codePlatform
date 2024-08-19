@@ -10,11 +10,11 @@ problem :Problem,
 }
 const ProblemScreen:React.FC<ProblemScreenProps> = ({problem}) => {
   const [accepted,setAccepted]=useState(false);
-  const [solve,setSolve]= useState(false);
+  const [solve,setSolved]= useState(false);
   return (
     <Split className="split" minSize={0}>
-      <Description problem={problem} solved={solve}/>
-      <CodeEditor problem={problem} setAccepted={setAccepted} setSolve={setSolve}/>
+      <Description problem={problem} Solved={solve}/>
+      <CodeEditor problem={problem} setAccepted={setAccepted} setSolved={setSolved}/>
     </Split>
   )
 }

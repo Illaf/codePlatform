@@ -15,12 +15,13 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 type CodeEditorProps={
   problem:Problem,
   setAccepted: React.Dispatch<React.SetStateAction<boolean>>;
-  setSolve: React.Dispatch<React.SetStateAction<boolean>>;
+  setSolved: React.Dispatch<React.SetStateAction<boolean>>;
   
 }
-const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) => {
+const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolved}) => {
   const [activeId,setActiveId]=useState(0);
   let [userCode,setUserCode] = useState<string>(problem.starterCode);
+  const[loading,setLoading] = useState(false);
   const [user]= useAuthState(auth);
   const {query : {qid}}= useRouter();
   const handleSubmit= async()=>{
@@ -38,12 +39,19 @@ alert("submit");
       return;
     }
     try {
+      setLoading(true);
       const callback= new Function(`return ${userCode}`)();
       const result= problems[qid as string].handlerFunction(callback);
       if(result){
         alert("All test cases passed!")
        
       }
+      const userRef= doc(firestore,"users",user.uid);
+      await updateDoc(userRef,{
+        solvedProblems: arrayUnion(qid)
+      })
+      setSolved(true)
+      setLoading(false);
     } catch (error:any) {
       alert(`"One or more test cases failed \n" ${error.message}`);
       console.log(error)
@@ -135,7 +143,7 @@ alert("submit");
                     </div>
                     
             </div>
-            <TestFooter handleProblemSubmit={handleProblemSubmit}/>
+            <TestFooter handleProblemSubmit={handleProblemSubmit} setLoading={setLoading}/>
      </Split>
     </div>
   )

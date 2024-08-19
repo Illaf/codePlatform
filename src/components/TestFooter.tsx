@@ -1,8 +1,10 @@
 import React from 'react'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 type testFooterProps={
 	handleProblemSubmit: ()=> void;
+	Loading:React.Dispatch<React.SetStateAction<boolean>>
 }
-const TestFooter: React.FC<testFooterProps> = ({handleProblemSubmit}) => {
+const TestFooter: React.FC<testFooterProps> = ({handleProblemSubmit,loading}) => {
 	
   return (
 	<div className='flex bg-gray-300 absolute bottom-0 z-10 w-full'>
@@ -20,6 +22,7 @@ const TestFooter: React.FC<testFooterProps> = ({handleProblemSubmit}) => {
 				className='px-3 py-1.5 text-sm font-medium items-center whitespace-nowrap transition-all focus:outline-none inline-flex bg-dark-fill-3  hover:bg-dark-fill-2 text-dark-label-2 rounded-lg'
 				onClick={handleProblemSubmit}
 			>
+				{loading && <AiOutlineLoading3Quarters className='animate-spin' />}
 				Run
 			</button>
 			<button

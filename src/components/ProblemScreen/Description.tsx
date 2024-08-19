@@ -11,11 +11,11 @@ import { toast } from "react-toastify";
 
 type ProblemDescriptionProps = {
     problem:Problem;
-    solved:boolean;
+    Solved:boolean;
 	
 };
 
-const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem}) => {
+const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved}) => {
 	
 	const {currentProblem, setCurrentProblem,loading}= useProblemDetails(problem.id);
 	const {like,dislike,star,solved, setData}= useGetProblemData(problem.id);
@@ -167,13 +167,16 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem}) => {
 							</div>
 							<div className='cursor-pointer group relative '>
 							<div className='rounded p-[3px] ml-4 text-lg transition-colors duration-200 text-green-s text-dark-green-s cursor-pointer'>
-								<BsCheck2Circle />
+								{Solved && <BsCheck2Circle className="text-green-500"/>}
+								{!Solved && <BsCheck2Circle />}
+								
 								<div
 								className='absolute top-10 left-2/4 -translate-x-2/4  mx-auto bg-dark-layer-1 text-brand-orange p-2 rounded shadow-lg 
 								z-40 group-hover:scale-100 scale-0 
 								transition-all duration-300 ease-in-out '
 							>
-								<p className='text-sm '>Not done</p>
+								{!Solved && <p className='text-sm '>Not solved</p>}
+								{Solved && <p className='text-sm '>solved!</p>}
 								</div>
 								
 							</div>
