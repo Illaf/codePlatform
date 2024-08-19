@@ -16,13 +16,19 @@ type CodeEditorProps={
   problem:Problem,
   setAccepted: React.Dispatch<React.SetStateAction<boolean>>;
   setSolve: React.Dispatch<React.SetStateAction<boolean>>;
+  
 }
 const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) => {
   const [activeId,setActiveId]=useState(0);
   let [userCode,setUserCode] = useState<string>(problem.starterCode);
   const [user]= useAuthState(auth);
   const {query : {qid}}= useRouter();
+  const handleSubmit= async()=>{
+alert("submit");
+  }
   const handleProblemSubmit=async()=>{
+   
+
     if(!user){
       toast.error("You need to sign up for submitting a problem",{
         position:"top-center",
@@ -32,28 +38,39 @@ const CodeEditor:React.FC<CodeEditorProps> = ({problem,setAccepted,setSolve}) =>
       return;
     }
     try {
-     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName)) 
-     const callback= new Function(`return ${userCode}`)(); 
-     const handler= problems[qid as string].handlerFunction;
-     if(typeof handler === 'function'){
-      const response= handler(callback);
-      if(response){
-        toast.success("Congratulations! All test cases passed.");
-        // setAccepted(true);
-        // setTimeout(()=>{
-        //   setAccepted(false);
-        // },3000)
-       }
-       const userRef= doc(firestore,"users",user.uid);
-       await updateDoc(userRef, {
-        solvedProblems: arrayUnion(qid)
-       });
-       setSolve(true);
-     }
-   
-    } catch (error) {
+      const callback= new Function(`return ${userCode}`)();
+      const result= problems[qid as string].handlerFunction(callback);
+      if(result){
+        alert("All test cases passed!")
+       
+      }
+    } catch (error:any) {
+      alert(`"One or more test cases failed \n" ${error.message}`);
       console.log(error)
     }
+    // try {
+    //  userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName)) 
+    //  const callback= new Function(`return ${userCode}`)(); 
+    //  const handler= problems[qid as string].handlerFunction;
+    //  if(typeof handler === 'function'){
+    //   const response= handler(callback);
+    //   if(response){
+    //     toast.success("Congratulations! All test cases passed.");
+    //     // setAccepted(true);
+    //     // setTimeout(()=>{
+    //     //   setAccepted(false);
+    //     // },3000)
+    //    }
+    //    const userRef= doc(firestore,"users",user.uid);
+    //    await updateDoc(userRef, {
+    //     solvedProblems: arrayUnion(qid)
+    //    });
+    //    setSolve(true);
+    //  }
+   
+    // } catch (error) {
+    //   console.log(error)
+    // }
   }
   const onCodeChange=(value:string)=>{
     setUserCode(value);

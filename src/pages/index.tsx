@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import { Roboto } from '@next/font/google';
 import TopSection from "@/components/TopSection";
 import Document from "../components/Document";
 import { useEffect, useState } from "react";
@@ -8,15 +9,18 @@ import { auth, firestore } from "@/config/firebase";
 import {  Grid } from 'react-loader-spinner'
 import useMounted from "@/hooks/mounted";
 import { onAuthStateChanged } from "firebase/auth";
-import router from "next/router";
+import router, { useRouter } from "next/router";
 
 import AuthPage from "./auth";
 const inter = Inter({ subsets: ["latin"] });
-
+const roboto = Roboto({
+	subsets: ['latin'], // You can specify the subsets you need
+	weight: ['400', '700'], // You can specify the weights you need
+  });
 
 export default function Home() {
-	const [loading,setLoading]= useState(true);
-	const hasMounted= useMounted();
+	// const [loading,setLoading]= useState(true);
+	// const hasMounted= useMounted();
 
 	// useEffect(() => {
 	// 	const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,25 +56,41 @@ export default function Home() {
 	// 	await setDoc(doc(firestore, "problems", inputs.id),parsedProblem);
 	// 	alert("saved to db");
 	// }
+	// useEffect(() => {
+	// 	const unsubscribe = onAuthStateChanged(auth, (user) => {
+	// 	  if (!user) {
+	// 		router.push("/auth"); // Redirect to auth page if not logged in
+	// 	  } else {
+	// 		setLoading(false); // Stop loading once user is authenticated
+	// 	  }
+	// 	});
+	
+	// 	return () => unsubscribe(); // Correctly return the cleanup function
+	//   }, [router]);
+	//   if(!hasMounted){
+	// 	return (
+	// 		<AuthPage/>
+	// 	);
+	// }
+	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState(null);
+	const router = useRouter();
+
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-		  if (!user) {
-			router.push("/auth"); // Redirect to auth page if not logged in
-		  } else {
-			setLoading(false); // Stop loading once user is authenticated
-		  }
+			if (user) {
+				setUser(user);
+				setLoading(false);
+			} else {
+				router.push('/auth');
+			}
 		});
-	
-		return () => unsubscribe(); // Correctly return the cleanup function
-	  }, [router]);
-	  if(!hasMounted){
-		return (
-			<AuthPage/>
-		);
-	}
+
+		return () => unsubscribe(); // Cleanup subscription on unmount
+	}, [router]);
   return (
 	
-    <main className="min-h-screen ">
+    <main className= {`${roboto.className} min-h-screen`}>
 	
      <TopSection/>
      {/* <h1
