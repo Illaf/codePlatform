@@ -8,7 +8,7 @@ import { AiFillLike, AiFillDislike } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
-
+import {MoonLoader} from "react-spinners";
 type ProblemDescriptionProps = {
     problem:Problem;
     Solved:boolean;
@@ -16,10 +16,10 @@ type ProblemDescriptionProps = {
 };
 
 const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved}) => {
-	
-	const {currentProblem, setCurrentProblem,loading}= useProblemDetails(problem.id);
-	const {like,dislike,star,solved, setData}= useGetProblemData(problem.id);
 	const [user] = useAuthState(auth);
+	const {currentProblem, loading,problemDifficulty,setCurrentProblem}= useProblemDetails(problem.id);
+	const {like,dislike,star,solved, setData}= useGetProblemData(problem.id);
+	
 	const [updating, setUpdating] = useState(false);
 	const returnUserDataAndProblemData = async (transaction: any) => {
 		const userRef = doc(firestore, "users", user!.uid);
@@ -30,7 +30,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved})
 	};
 	const handleLikes = async () => {
 		if (!user) {
-			toast.error("You must be logged in to like a problem", { position: "top-left", theme: "dark" });
+			toast.error("You must be logged in to like a problem", { position: "top-center", theme: "dark" });
 			return;
 		}
 		if (updating) return;
@@ -161,9 +161,9 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved})
 						</div>
 						<div className='flex items-center mt-3 border-b-2'>
 							<div
-								className={`text-olive bg-olive inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-xs font-medium capitalize `}
+								className={`${problemDifficulty} inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-xm font-medium capitalize `}
 							>
-								Easy
+								{currentProblem?.difficulty}
 							</div>
 							<div className='cursor-pointer group relative '>
 							<div className='rounded p-[3px] ml-4 text-lg transition-colors duration-200 text-green-s text-dark-green-s cursor-pointer'>
@@ -186,6 +186,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved})
 							<div className='flex items-center cursor-pointer group relative  hover:bg-dark-fill-3 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-dark-gray-6'
 							onClick={handleLikes}
 							>
+								{updating && (<MoonLoader className="w-2 h-2"/>)}
 								{like && <AiFillLike className="text-blue-600 "/>}
 								{!like && <AiFillLike />}
 								{/* {updating && <className='animate-spin' />} */}
@@ -271,6 +272,7 @@ export default ProblemDescription;
 function useProblemDetails(problemId:string){
 const [currentProblem, setCurrentProblem] = useState<DBProblem | null>(null);
 const [loading,setLoading] = useState<boolean>(true);
+const [problemDifficulty,setProblemDifficulty] = useState("");
 useEffect(()=>{
 const getCurrentProblem= async()=>{
 	setLoading(true);
@@ -280,6 +282,9 @@ const getCurrentProblem= async()=>{
 		const problem= docSnap.data();
 		
 		setCurrentProblem({id:docSnap.id,...problem} as DBProblem);
+		setProblemDifficulty(
+			problem.difficulty === "Easy"? "text-green-600":problem.difficulty === "Medium"? "text-yellow-600":"text-red-600"
+		);
 
 	}
 
@@ -287,7 +292,7 @@ const getCurrentProblem= async()=>{
 }
 getCurrentProblem();
 },[problemId])
-return { currentProblem, loading, setCurrentProblem };
+return { currentProblem, loading, problemDifficulty,setCurrentProblem };
 }
 function useGetProblemData(problemId:string) {
 const [data,setData]= useState({like:false,dislike:false,star:false,solved:false});
@@ -310,7 +315,7 @@ const getProblemData= async()=>{
 	}
 }
 if(user) getProblemData();
-return () => setData({ like: false, dislike: false, star: false, solved: false });
+return () => setData({ like: false, dislike: false, star: false, solved: false }); //this statrment will run on unmount
 },[problemId,user]);
 return {...data,setData}
 }

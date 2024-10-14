@@ -38,27 +38,29 @@ const EditorNav = () => {
                 </button>
 
             </div>
-            <button>
-            <div className='flex items-center m-2'>
-                <div>
-                    <IoSettingsOutline />
-                </div>
-                <div className='absolute w-auto p-2 text-sm m-2 min-w-max translate-x-3 right-0 top-5 z-10 rounded-md shadow-md bg-gray-100 origin-center scale-0 transition-all duration-100 ease-linear group-hover:scale-100'>
-                    Settings
-                </div>
-            </div>
-            </button>
-            <button>
-            <div className='flex items-center m-2 mr-4'>
-                <div onClick={handleFullScreen}>
-             {!fullScreen ? <AiOutlineFullscreen className='text-white font-bold text-3xl'/>:<AiOutlineFullscreenExit className='text-white font-bold text-2xl'/>}
-                </div>
-                <div className='absolute w-auto p-2 text-sm m-2 min-w-max translate-x-3 right-0 top-5 z-10 rounded-md shadow-md bg-gray-100 origin-center scale-0 transition-all duration-100 ease-linear group-hover:scale-100'>
-                    Full screen
-                </div>
-            </div>
-            </button>
-        </div>
+            <div className='flex flex-row'>
+            <div className="relative group">
+    <button className='flex items-center m-2'>
+      <IoSettingsOutline className='text-white text-2xl' />
+    </button>
+    <div className='absolute w-auto p-2 text-sm min-w-max translate-x-3 right-0 top-5 z-10 rounded-md shadow-md bg-gray-100 opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-100 ease-linear'>
+      Settings
+    </div>
+  </div>
+  <div className="relative group">
+    <button className='flex items-center m-2 mr-4' onClick={handleFullScreen}>
+      {!fullScreen ? (
+        <AiOutlineFullscreen className='text-white font-bold text-2xl'/>
+      ) : (
+        <AiOutlineFullscreenExit className='text-white font-bold text-2xl'/>
+      )}
+    </button>
+    <div className='absolute w-auto p-2 text-sm min-w-max translate-x-3 right-0 top-5 z-10 rounded-md shadow-md bg-gray-100 opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-100 ease-linear'>
+      Full screen
+    </div>
+  </div>
+</div>
+</div>    
     )
 }
 

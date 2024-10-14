@@ -1,7 +1,7 @@
 
 import assert from "assert";
 import { Problem } from "../types/problem";
-//import { Problem } from "../types/problem";
+
 
 const starterCodeTwoSum = `function twoSum(nums,target){
   // Write your code here
@@ -66,11 +66,11 @@ export const twoSum: Problem = {
 		},
 	],
 	constraints: `<li class='mt-2'>
-  <code>2 ≤ nums.length ≤ 10</code>
+  <p>2 ≤ nums.length ≤ 10</p>
 </li> <li class='mt-2'>
-<code>-10 ≤ nums[i] ≤ 10</code>
+<p>-10 ≤ nums[i] ≤ 10</p>
 </li> <li class='mt-2'>
-<code>-10 ≤ target ≤ 10</code>
+<p>-10 ≤ target ≤ 10</p>
 </li>
 <li class='mt-2 text-sm'>
 <strong>Only one valid answer exists.</strong>

@@ -75,7 +75,7 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 			
 			)}
 			<div className='text-white'>
-			{user && (<Timer />)}
+			{user && problemWindow && (<Timer />)}
 			</div>
 				
 				<div className='flex items-center space-x-4 flex-1 justify-end'>
@@ -97,7 +97,7 @@ const TopSection:React.FC<TopSectionProps> = ({problemWindow}) => {
 								z-40 group-hover:scale-100 scale-0 
 								transition-all duration-300 ease-in-out text-white'
 							>
-								<p className='text-sm text-white'>{user.email}</p>
+								<p className='text-sm text-black'>{user.email}</p>
 							</div>
 						</div>
 			

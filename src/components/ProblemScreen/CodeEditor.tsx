@@ -107,9 +107,10 @@ alert("submit");
           <div className='flex h-10 items-center space-x-6  '>
             <div className='relative flex h-full flex-col justify-center cursor-pointer '>
                 <div className='font-medium leading-5'>Test cases</div>
-                <hr className='absolute bottom-0 bg-black h-[3px] w-full'/>
+          <hr className='absolute bottom-0 bg-black h-[3px] w-full'/>
+               
             </div>
-
+            
           </div>
           <div className='flex'>
 				

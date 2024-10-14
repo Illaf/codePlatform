@@ -2,7 +2,7 @@ import React from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 type testFooterProps={
 	handleProblemSubmit: ()=> void;
-	Loading:React.Dispatch<React.SetStateAction<boolean>>
+	loading:React.Dispatch<React.SetStateAction<boolean>>
 }
 const TestFooter: React.FC<testFooterProps> = ({handleProblemSubmit,loading}) => {
 	

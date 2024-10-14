@@ -6,5 +6,6 @@ interface ProblemMap{
 }
 export const problems:ProblemMap={
     "two-sum":twoSum,
-    "reverse-linked-list":reverseLinkedList
+    "reverse-linked-list":reverseLinkedList,
+    
 }
