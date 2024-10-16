@@ -127,6 +127,12 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved})
 		setUpdating(false);
 	};
 	const handleStar= async()=>{
+		if (!user) {
+			toast.error("You must be logged in to star a problem", { position: "top-left", theme: "dark" });
+			return;
+		}
+		if (updating) return;
+		setUpdating(true);
 		if(!star){
 			const userRef= doc(firestore,"users",user.uid);
 			await updateDoc(userRef,{
@@ -142,6 +148,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({problem,Solved})
 			})
 			setData(prev=>({...prev,star:false}))
 		}
+		setUpdating(false);
 	}
 	return (
 		<div className='bg-dark-layer-1'>
