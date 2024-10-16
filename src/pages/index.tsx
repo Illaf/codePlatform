@@ -8,7 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, firestore } from "@/config/firebase";
 import {  Grid } from 'react-loader-spinner'
 import useMounted from "@/hooks/mounted";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged,User } from "firebase/auth";
 import router, { useRouter } from "next/router";
 
 import AuthPage from "./auth";
@@ -73,7 +73,7 @@ export default function Home() {
 	// 	);
 	// }
 	const [loading, setLoading] = useState(true);
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState<User | null>(null);
 	const router = useRouter();
 
 	useEffect(() => {
