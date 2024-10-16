@@ -39,19 +39,44 @@ alert("submit");
       return;
     }
     try {
-      setLoading(true);
-      const callback= new Function(`return ${userCode}`)();
-      const result= problems[qid as string].handlerFunction(callback);
-      if(result){
-        alert("All test cases passed!")
+      // setLoading(true);
+      // const callback= new Function(`return ${userCode}`)();
+      // const result= problems[qid as string].handlerFunction(callback);
+      // if(result){
+      //   alert("All test cases passed!")
        
-      }
-      const userRef= doc(firestore,"users",user.uid);
-      await updateDoc(userRef,{
-        solvedProblems: arrayUnion(qid)
-      })
-      setSolved(true)
-      setLoading(false);
+      // }
+      // const userRef= doc(firestore,"users",user.uid);
+      // await updateDoc(userRef,{
+      //   solvedProblems: arrayUnion(qid)
+      // })
+      // setSolved(true)
+      // setLoading(false);
+      userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
+			const cb = new Function(`return ${userCode}`)();
+			const handler = problems[qid as string].handlerFunction;
+
+			if (typeof handler === "function") {
+				const success = handler(cb);
+				if (success) {
+          alert("Congrats! All tests passed!")
+					// toast.success("Congrats! All tests passed!", {
+					// 	position: "top-center",
+					// 	autoClose: 3000,
+					// 	theme: "dark",
+					// });
+					
+					setTimeout(() => {
+					
+					}, 4000);
+
+					const userRef = doc(firestore, "users", user.uid);
+					await updateDoc(userRef, {
+						solvedProblems: arrayUnion(qid),
+					});
+					setSolved(true);
+				}
+			}
     } catch (error:any) {
       alert(`"One or more test cases failed \n" ${error.message}`);
       console.log(error)
@@ -144,7 +169,7 @@ alert("submit");
                     </div>
                     
             </div>
-            <TestFooter handleProblemSubmit={handleProblemSubmit} setLoading={setLoading}/>
+            <TestFooter handleProblemSubmit={handleProblemSubmit} loading={setLoading}/>
      </Split>
     </div>
   )
